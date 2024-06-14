@@ -1,11 +1,12 @@
 package com.farma_rda.modelo;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 public class Sucursal {
     private int puntoVenta;
+    @JsonBackReference
     private Empleado encargado;
-    @JsonManagedReference //se coloca en la propiedad de la entidad "padre" que contiene la lista de referencias a la entidad "hija"
+    @JsonBackReference //se coloca en la propiedad de la entidad "padre" que contiene la lista de referencias a la entidad "hija"
     private Domicilio domicilio;
 
     public Sucursal(int puntoVenta, Empleado encargado, Domicilio domicilio) {

@@ -1,11 +1,17 @@
 package com.farma_rda.modelo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.bson.Document;
 
 public class Main {
     public static void main(String[] args) {
@@ -60,6 +66,39 @@ public class Main {
             System.out.println("Datos serializados a JSON correctamente!");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        
+        
+     // Cargar las ventas en MongoDB
+        try (MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
+            MongoDatabase database = mongoClient.getDatabase("farma_rda");
+            MongoCollection<Document> collection = database.getCollection("ventas");
+
+            for (Venta venta : ventas) {
+                Document docVenta = new Document()
+                        .append("ventaId", venta.getNumeroTicket())
+                        .append("fecha", venta.getFecha())
+                        .append("total", venta.getTotalVenta())
+                        .append("formaPago", venta.getFormaPago())
+                        .append("cliente", venta.getCliente().getApellido() + ", " + venta.getCliente().getNombre())
+                        .append("vendedor", venta.getEmpleadoAtendio().getApellido() + ", " + venta.getEmpleadoAtendio().getNombre())
+                        .append("cobrador", venta.getEmpleadoCobro().getApellido() + ", " + venta.getEmpleadoCobro().getNombre())
+                        .append("sucursal", venta.getSucursal().getPuntoVenta());
+
+                List<Document> productosVendidosDocs = new ArrayList<>();
+                for (ProductoVendido productoVendido : venta.getProductosVendidos()) {
+                    Document docProductoVendido = new Document()
+                            .append("producto", productoVendido.getProducto().getDescripcion())
+                            .append("cantidad", productoVendido.getCantidad());
+                    productosVendidosDocs.add(docProductoVendido);
+                }
+
+                docVenta.append("productosVendidos", productosVendidosDocs);
+
+                collection.insertOne(docVenta);
+            }
+
+            System.out.println("Ventas cargadas en MongoDB correctamente.");
         }
     }
 }

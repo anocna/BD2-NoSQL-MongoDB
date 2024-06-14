@@ -1,6 +1,6 @@
 package com.farma_rda.modelo;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 public class Cliente {
     private int dni;
@@ -9,7 +9,7 @@ public class Cliente {
     private String obraSocialNombre;
     private String obraSocialNumero;
     private String tipoCliente;
-    @JsonManagedReference //se coloca en la propiedad de la entidad "padre" que contiene la lista de referencias a la entidad "hija"
+    @JsonBackReference //se coloca en la propiedad de la entidad "padre" que contiene la lista de referencias a la entidad "hija"
     private Domicilio domicilio;
 
     public Cliente(int dni, String apellido, String nombre, String obraSocialNombre, String obraSocialNumero, String tipoCliente, Domicilio domicilio) {

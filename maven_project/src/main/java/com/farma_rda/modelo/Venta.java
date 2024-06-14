@@ -8,9 +8,13 @@ public class Venta {
     private String fecha;
     private double totalVenta;
     private String formaPago;
+    @JsonManagedReference 
     private Cliente cliente;
+    @JsonManagedReference 
     private Empleado empleadoAtendio;
+    @JsonManagedReference 
     private Empleado empleadoCobro;
+    @JsonManagedReference 
     private Sucursal sucursal;
     @JsonManagedReference //maneja la lista de ProductoVendido
     private List<ProductoVendido> productosVendidos;
